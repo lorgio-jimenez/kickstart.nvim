@@ -92,6 +92,12 @@ vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
+-- Disable perl provider
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_go_provider = 0
+vim.g.loaded_cargo_provider = 0
+vim.g.loaded_composer_provider = 0
+vim.g.loaded_composer_provider = 0
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -176,6 +182,8 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+vim.keymap.set('n', '<leader>qa', ':qa!<CR>', { noremap = true, silent = true })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -204,6 +212,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+--
+-- use jk to exit insert mode
+vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Exit insert mode with jk' })
+vim.keymap.set('i', 'kj', '<ESC>', { desc = 'Exit insert mode with kj' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -715,7 +727,26 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        -- Formatters
+        'stylua', -- Lua formatter
+        'prettier', -- General-purpose formatter (JS, TS, HTML, CSS, etc.)
+        'isort', -- Python import formatter
+        -- Linters
+        'tflint', -- Terraform linter
+        'pylint', -- Python linter
+        'eslint_d', -- JavaScript linter (daemonized)
+        'eslint', -- JavaScript and TypeScript linter
+        -- Language Server Protocols (LSP)
+        'dockerls', -- LSP for Dockerfiles
+        'lua_ls', -- LSP for Lua
+        'ts_ls', -- LSP for TypeScript and JavaScript
+        'yamlls', -- LSP for YAML
+        'graphql', -- LSP for GraphQL
+        'pyright', -- LSP for Python
+        'terraformls', -- LSP for Terraform
+        -- Debug Adapter Protocols (DAP)
+        'debugpy', -- Python DAP
+        -- 'elixirls',    -- Uncomment if needed for Elixir LSP
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -858,6 +889,11 @@ require('lazy').setup({
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
+        sources = {
+          per_filetype = {
+            codecompanion = { 'codecompanion' },
+          },
+        },
       },
 
       snippets = { preset = 'luasnip' },
@@ -944,7 +980,30 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'css',
+        'csv',
+        'diff',
+        'dockerfile',
+        'graphql',
+        'html',
+        'javascript',
+        'jq',
+        'json',
+        'lua',
+        'markdown',
+        'markdown_inline',
+        'python',
+        'query',
+        'regex',
+        'sql',
+        'terraform',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -973,19 +1032,19 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
-  --
+  { import = 'custom.plugins' },
+
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
