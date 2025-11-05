@@ -6,6 +6,7 @@ return {
   {
     'olimorris/codecompanion.nvim',
     opts = {},
+    enabled = true,
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
@@ -34,5 +35,22 @@ return {
       }
     end,
   },
-  { 'nvim-tree/nvim-web-devicons', opts = {} },
+  {
+    'nvim-tree/nvim-web-devicons',
+    lazy = false,
+    config = function()
+      require('nvim-web-devicons').setup {}
+    end,
+  },
+  { 'MunifTanjim/nui.nvim' },
+  { 'hrsh7th/nvim-cmp' },
+  {
+    'pieces-app/plugin_neo_vim',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    -- whatever other options you already have:
+    -- event = "VeryLazy",
+    -- config = function() ... end,
+  },
 }
